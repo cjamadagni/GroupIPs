@@ -11,31 +11,58 @@ using namespace std;
 class IPClassify {
 
 	private:
-		array<vector<string>,32> map; // Using an array of vectors to store the IPs
-
+		array<vector<string>,33> map; // Using an array of vectors to store the IPs
+		ifstream dataFile;
+	
 	public:
+		
+		IPClassify() {
+			dataFile.open("data.txt");
+			parseData();
+		}
+
+		~IPClassify() {
+			dataFile.close();
+		}
+
+		void parseData() {
+			string ip_address;
+
+			if (dataFile.is_open()) {
+				while(getline(dataFile,ip_address)) {
+					classifyIP(ip_address);
+				}
+			}
+		}
+
 		void classifyIP(string ip) {
 			// Getting the CIDR notation
 			int cidr = stoi(ip.substr(ip.size()-2,2));
 
 			// Storing the IP
-			map[cidr-1].push_back(ip);
+			if(cidr > 32 || cidr < 0) {
+				cout << "Incorrent IP address: " << ip << endl << endl;
+				return;  
+			}
+			
+			map[cidr].push_back(ip);
 		}
 
 		void printIP() {
 			int i,j;
-			cout<<endl;
+			cout << endl;
 
-			for(i=0;i<32;i++) {
-				if (map[i].size()==0)
+			for(i = 0; i < 33; i++) {
+				if (map[i].size() == 0) {
 					continue;
-				else {
-					cout<<"IPs with CIDR = "<<i+1<<endl;
-
-					for (j=0;j<map[i].size();j++)
-						cout<<map[i][j]<<endl;
 				}
-				cout<<endl<<endl;
+				else {
+					cout << "IPs with CIDR = " << i << endl;
+
+					for (j = 0; j < map[i].size(); j++)
+						cout << map[i][j] << endl;
+				}
+				cout << endl << endl;
 			}
 		}
 };
@@ -43,19 +70,9 @@ class IPClassify {
 
 int main() {
 	
-	string ip_address;
 	IPClassify ip;
-
-	ifstream dataFile;
-	dataFile.open("data.txt");
-
-	if (dataFile.is_open()) {
-		while(getline(dataFile,ip_address))
-			ip.classifyIP(ip_address);
-	}
-	
-	dataFile.close();
+	ip.parseData();
 	ip.printIP();
-
+	
 	return 0;	
 }
