@@ -24,12 +24,13 @@ class IPClassify {
 
 		void printIP() {
 			int i,j;
+			cout<<endl;
 
 			for(i=0;i<32;i++) {
 				if (map[i].size()==0)
 					continue;
 				else {
-					cout<<"IPs with CIDR = "<<i+1<<endl<<endl;
+					cout<<"IPs with CIDR = "<<i+1<<endl;
 
 					for (j=0;j<map[i].size();j++)
 						cout<<map[i][j]<<endl;
